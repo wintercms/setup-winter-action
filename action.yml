@@ -1,0 +1,45 @@
+name: 'Setup Winter'
+description: 'Set up a Winter install in a GitHub Action workflow'
+inputs:
+  winter-ref:
+    description: 'The Winter version or branch you wish to use. Defaults to the current development version.'
+    required: false
+    default: 'develop'
+  php-version:
+    description: 'Defines the PHP version to use with this Winter installation. This is forwarded to the shivammathur/setup-php action'
+    required: false
+    default: '8.4'
+  plugin-author:
+    description: 'When testing a plugin, this allows you to define the plugin author directory name.'
+    required: false
+  plugin-name:
+    description: 'When testing a plugin, this allows you to defin the plugin directory name.'
+    required: false
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Checkout Winter CMS'
+      uses: actions/checkout@v4
+      with:
+        repository: 'wintercms/winter'
+        ref: '${{ inputs.winter-ref }}'
+        
+    - name: 'Checkout plugin'
+      if: ${{ inputs.plugin-author && inputs.plugin-name }}
+      uses: actions/checkout@v4
+      with:
+        path: 'plugins/${{ inputs.plugin-author }}/${{ inputs.plugin-name }}'
+
+    - name: 'Install PHP'
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '${{ inputs.php-version }}'
+        tools: composer:v2
+        extensions: curl, fileinfo, gd, mbstring, openssl, pdo, pdo_sqlite, sqlite3, xml, zip
+
+    - name: Update Composer merge
+      if: ${{ inputs.plugin-author && inputs.plugin-name }}
+      run: 'sed -i "/\"plugins\/myauthor\/\*\/composer.json\"/c \"plugins\/${{ inputs.plugin-author }}\/\${{ inputs.plugin-name }}\/composer.json\"" composer.json'
+
+    - name: Install Composer dependencies
+      run: composer install --no-interaction --no-progress --no-scripts
