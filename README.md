@@ -1,6 +1,6 @@
-# Setup Winter Action
+# ❄️ Setup Winter Action
 
-This GitHub Action sets up a PHP environment suitable for running Winter and a fresh Winter installation. This is useful for running automated tests or checks for Winter plugins.
+This GitHub Action sets up a PHP environment suitable for running [Winter](https://github.com/wintercms/winter) and a fresh Winter installation. This is useful for running automated tests or checks for Winter plugins.
 
 The Action works by doing the following:
 
