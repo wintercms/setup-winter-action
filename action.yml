@@ -1,5 +1,9 @@
 name: 'Setup Winter'
+author: Winter CMS
 description: 'Set up a Winter install in a GitHub Action workflow'
+branding:
+  color: 'blue'
+  icon: 'cloud-snow'
 inputs:
   winter-ref:
     description: 'The Winter version or branch you wish to use. Defaults to the current development version.'
