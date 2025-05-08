@@ -44,7 +44,7 @@ runs:
     - name: Update Composer merge
       if: ${{ inputs.plugin-author && inputs.plugin-name }}
       shell: bash
-      run: 'sed -i "/\"plugins\/myauthor\/\*\/composer.json\"/c \"plugins\/${{ inputs.plugin-author }}\/\${{ inputs.plugin-name }}\/composer.json\"" composer.json'
+      run: 'sed -i "/\"plugins\/myauthor\/\*\/composer.json\"/c \"plugins\/${{ inputs.plugin-author }}\/${{ inputs.plugin-name }}\/composer.json\"" composer.json'
 
     - name: Install Composer dependencies
       shell: bash
