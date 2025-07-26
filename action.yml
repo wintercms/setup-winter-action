@@ -19,6 +19,13 @@ inputs:
   plugin-name:
     description: 'When testing a plugin, this allows you to defin the plugin directory name.'
     required: false
+  configure-winter:
+    description: 'Configures Winter after installation, including setting up an SQLite database and admin account.'
+    required: false
+  admin-password:
+    description: 'If Winter is configured, this defines the admin password'
+    required: false
+    default: 'admin'
 runs:
   using: 'composite'
   steps:
@@ -49,3 +56,16 @@ runs:
     - name: Install Composer dependencies
       shell: bash
       run: composer install --no-interaction --no-progress --no-scripts
+
+    - name: Configure Winter
+      if: ${{ inputs.configure-winter && inputs.admin-password }}
+      shell: bash
+      env:
+        DB_CONNECTION: "sqlite"
+        DB_DATABASE: "${{ github.workspace }}/storage/database.sqlite"
+      run: |
+        php artisan winter:env -q
+        php artisan key:generate -q
+        touch ${{ github.workspace }}/storage/database.sqlite
+        php artisan migrate
+        php artisan winter:passwd admin ${{ inputs.admin-password }}
